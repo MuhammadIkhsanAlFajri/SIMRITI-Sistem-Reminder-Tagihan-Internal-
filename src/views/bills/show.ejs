@@ -1,0 +1,631 @@
+<div class="page-header">
+    <h1>Detail Tagihan</h1>
+    <p>Dashboard / Data Tagihan / Detail Tagihan</p>
+</div>
+
+
+<div class="detail-layout">
+
+    <!-- ================================================= -->
+    <!-- KOLOM KIRI -->
+    <!-- ================================================= -->
+
+    <div class="detail-left">
+
+
+        <!-- ================= INFORMASI TAGIHAN ================= -->
+
+        <div class="detail-card">
+
+            <h3>
+                <i class="fa-solid fa-list-check"></i>
+                Informasi Tagihan
+            </h3>
+
+
+            <table class="detail-table">
+
+                <tr>
+                    <td>Judul Tagihan</td>
+                    <td>
+                        <%= bill.title %>
+                    </td>
+                </tr>
+
+
+                <% if (bill.invoiceNumber) { %>
+
+                <tr>
+                    <td>Nomor Invoice</td>
+                    <td>
+                        <%= bill.invoiceNumber %>
+                    </td>
+                </tr>
+
+                <% } %>
+
+
+                <tr>
+                    <td>Perusahaan / Vendor</td>
+                    <td>
+                        <%= bill.vendor.name %>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td>Total Biaya Tagihan</td>
+                    <td>
+
+                        <% if (bill.displayAmount !== null && bill.displayAmount !== undefined) { %>
+
+                            Rp <%= Number(bill.displayAmount).toLocaleString("id-ID") %>
+
+                        <% } else { %>
+
+                            Belum ditentukan
+
+                        <% } %>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Biaya yang Sudah dibayar</td>
+                    <td>
+                        Rp <%= Number(bill.runningCost || 0).toLocaleString("id-ID") %>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Sisa Tagihan</td>
+                    <td>
+                        Rp <%= Number(bill.remainingCost || bill.amount || 0).toLocaleString("id-ID") %>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td>Tanggal Tagihan</td>
+                    <td>
+                        <%= bill.invoiceDate.toLocaleDateString("id-ID", {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric"
+                        }) %>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td>Tanggal Tagihan Dibuat</td>
+                    <td>
+                        <%= bill.createdAt.toLocaleDateString("id-ID", {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric"
+                        }) %>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td>Tanggal Tenggat Tagihan</td>
+                    <td>
+                        <%= bill.dueDate.toLocaleDateString("id-ID", {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric"
+                        }) %>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td>Status Tagihan</td>
+
+                    <td>
+
+                        <span class="status-badge <%= bill.status.toLowerCase() %>">
+                            <%= bill.status.replaceAll("_", " ") %>
+                        </span>
+
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+
+
+        <!-- ================= REMINDER ================= -->
+
+        <div class="detail-card reminder-detail-card">
+
+            <h3>
+                <i class="fa-solid fa-bell"></i>
+                Reminder
+            </h3>
+
+
+            <table class="detail-table">
+
+                <tr>
+                    <td>Hitung Mundur</td>
+
+                    <td>
+
+                        <%
+                            const today = new Date();
+
+                            const todayOnly = new Date(
+                                today.getFullYear(),
+                                today.getMonth(),
+                                today.getDate()
+                            );
+
+                            const dueOnly = new Date(
+                                bill.dueDate.getFullYear(),
+                                bill.dueDate.getMonth(),
+                                bill.dueDate.getDate()
+                            );
+
+                            const diffDays = Math.ceil(
+                                (dueOnly - todayOnly) /
+                                (1000 * 60 * 60 * 24)
+                            );
+                        %>
+
+
+                        <% if (bill.status === "SUDAH_DIBAYAR") { %>
+
+    <span class="countdown countdown-paid">
+        Lunas
+    </span>
+
+<% } else if (bill.status === "TERLAMBAT") { %>
+
+    <span class="countdown countdown-overdue">
+        Terlambat <%= Math.abs(diffDays) %> hari
+    </span>
+
+<% } else if (bill.status === "AKAN_JATUH_TEMPO") { %>
+
+    <span class="countdown countdown-warning">
+        Tersisa <%= diffDays %> Hari
+    </span>
+
+<% } else { %>
+
+    <span class="countdown countdown-waiting">
+        Tersisa <%= diffDays %> Hari
+    </span>
+
+<% } %>
+
+                    </td>
+                </tr>
+
+
+                
+
+
+                <tr>
+                    <td>Sampai Tenggat</td>
+
+                    <td>
+                        <%= bill.dueDate.toLocaleDateString("id-ID", {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric"
+                        }) %>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td>Jenis Tagihan</td>
+
+                    <td>
+
+                        <% if (bill.type === "BERULANG") { %>
+
+                            Tagihan Berulang
+
+                        <% } else { %>
+
+                            Tagihan Normal
+
+                        <% } %>
+
+                    </td>
+                </tr>
+
+
+                <% if (bill.type === "BERULANG") { %>
+
+                <tr>
+                    <td>Periode</td>
+
+                    <td>
+
+                        <%= bill.recurringPeriod || 1 %>
+
+                        <% if (bill.recurringMonths > 0) { %>
+
+                            dari <%= bill.recurringMonths %> bulan
+
+                        <% } else { %>
+
+                            (tanpa batas)
+
+                        <% } %>
+
+                    </td>
+                </tr>
+
+                <% } %>
+
+            </table>
+
+
+            <% if (bill.status !== "SUDAH_DIBAYAR") { %>
+
+                <div class="reminder-info">
+
+                    <i class="fa-solid fa-circle-info"></i>
+
+                    <span>
+                        Pengingat akan dikirim hingga tenggat tagihan.
+                    </span>
+
+                </div>
+
+            <% } %>
+
+        </div>
+
+    </div>
+
+        
+
+
+    <!-- ================================================= -->
+    <!-- KOLOM KANAN -->
+    <!-- ================================================= -->
+
+    <div class="detail-right">
+
+
+        <!-- ================= PREVIEW ================= -->
+
+        <div class="detail-card preview-card">
+
+            <h3>
+                <i class="fa-solid fa-eye"></i>
+                Preview Tagihan
+            </h3>
+
+
+            <% if (bill.invoiceFile) { %>
+
+                <iframe
+                    src="/uploads/invoice/<%= bill.invoiceFile %>"
+                    class="pdf-preview">
+                </iframe>
+
+
+                <div class="file-preview-info">
+
+                    <div>
+
+                        <i class="fa-regular fa-file-lines"></i>
+
+                        <div>
+
+                            <strong>
+                                <%= bill.invoiceFile %>
+                            </strong>
+
+                            <span>
+                                PDF
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <a
+                        href="/uploads/invoice/<%= bill.invoiceFile %>"
+                        target="_blank"
+                        class="btn-download"
+                    >
+
+                        <i class="fa-solid fa-download"></i>
+
+                        Unduh File
+
+                    </a>
+
+                </div>
+
+            <% } else { %>
+
+                <div class="empty-preview">
+
+                    <i class="fa-regular fa-file"></i>
+
+                    <p>
+                        Tidak ada dokumen invoice.
+                    </p>
+
+                </div>
+
+            <% } %>
+
+        </div>
+
+    </div>
+
+
+
+
+<!-- ================= HISTORY PEMBAYARAN ================= -->
+
+<% if (bill.type === "BERULANG") { %>
+
+<div class="detail-card history-card">
+
+    <h3>
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        History Pembayaran
+    </h3>
+
+    <%
+        // Hanya ambil pembayaran yang sudah lunas
+        const paidPayments = bill.payments
+            ? bill.payments.filter(
+                payment => payment.status === "SUDAH_DIBAYAR"
+            )
+            : [];
+    %>
+
+
+    <% if (paidPayments.length > 0) { %>
+
+        <!-- <% let historyRunningCost = 0 %> -->
+
+        <table class="history-table">
+
+            <thead>
+                <tr>
+                    <th>Periode</th>
+                    <th>Tenggat</th>
+                    <th>Tanggal Bayar</th>
+                    <th>Nominal Pembayaran</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+
+            <tbody>
+
+                <% paidPayments.forEach((payment, index) => { %>
+
+                    <!-- <% 
+                        const runningCost = paidPayments
+                            .slice(0, index + 1)
+                            .reduce((total, item) => {
+                                return total + Number(item.amount || 0);
+                            }, 0);
+                    %> -->
+
+                    <tr>
+
+                        <!-- PERIODE -->
+                        <td>
+                            Periode <%= index + 1 %>
+                        </td>
+
+
+                        <!-- TENGGAT -->
+                        <td>
+
+                            <%= payment.dueDate
+                                ? new Date(payment.dueDate)
+                                    .toLocaleDateString("id-ID", {
+                                        day: "2-digit",
+                                        month: "short",
+                                        year: "numeric"
+                                    })
+                                : "-"
+                            %>
+
+                        </td>
+
+
+                        <!-- TANGGAL BAYAR -->
+                        <td>
+
+                            <%= payment.paymentDate
+                                ? new Date(payment.paymentDate)
+                                    .toLocaleDateString("id-ID", {
+                                        day: "2-digit",
+                                        month: "short",
+                                        year: "numeric"
+                                    })
+                                : "-"
+                            %>
+
+                        </td>
+
+
+                        <!-- NOMINAL -->
+                        <td>
+
+                            <% if (
+                                payment.amount !== null &&
+                                payment.amount !== undefined
+                            ) { %>
+
+                                Rp <%= Number(payment.amount)
+                                    .toLocaleString("id-ID")
+                                %>
+
+                            <% } else { %>
+
+                                -
+
+                            <% } %>
+
+                        </td>
+
+                        <!-- Biaya BERJALAN
+                        <td>
+                            Rp <%= runningCost.toLocaleString("id-ID") %>
+                        </td> -->
+
+
+                        <!-- STATUS -->
+                        <td>
+
+                            <span class="history-status countdown-paid">
+
+                                <i class="fa-solid fa-circle-check"></i>
+
+                                Lunas
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                <% }) %>
+
+            </tbody>
+
+        </table>
+
+
+    <% } else { %>
+
+        <div class="history-empty">
+
+            <i class="fa-solid fa-clock-rotate-left"></i>
+
+            <p>
+                Belum ada riwayat pembayaran.
+            </p>
+
+        </div>
+
+    <% } %>
+
+</div>
+
+<% } %>
+
+
+<!-- ================= TOTAL SUDAH DIBAYAR ================= -->
+
+<% if (bill.type === "BERULANG") { %>
+
+<div class="total-paid-card">
+
+    <div class="total-paid-left">
+
+        <div class="total-paid-icon">
+            <i class="fa-solid fa-money-bill-wave"></i>
+        </div>
+
+        <div class="total-paid-info">
+
+            <span>
+                Total yang sudah dibayar
+            </span>
+
+            <small>
+                Akumulasi seluruh pembayaran yang telah divalidasi
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="total-paid-value">
+
+        Rp <%= Number(bill.runningCost || 0).toLocaleString("id-ID") %>
+
+    </div>
+
+</div>
+
+<% } %>
+
+
+</div>
+
+
+
+<!-- ================================================= -->
+<!-- BUTTON -->
+<!-- ================================================= -->
+
+<div class="detail-actions">
+
+    <a
+        href="/bills"
+        class="btn-back"
+    >
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+        Kembali
+
+    </a>
+
+
+    <div class="detail-actions-right">
+
+
+        <!-- EDIT HANYA JIKA BELUM LUNAS -->
+
+        <% if (bill.status !== "SUDAH_DIBAYAR") { %>
+
+            <a
+                href="/bills/<%= bill.id %>/edit"
+                class="btn-blue"
+            >
+
+                <i class="fa-solid fa-pen"></i>
+
+                Edit Tagihan
+
+            </a>
+
+        <% } %>
+
+
+        <!-- VALIDASI HANYA JIKA BELUM LUNAS -->
+
+        <% if (bill.status !== "SUDAH_DIBAYAR") { %>
+
+            <a
+                href="/bills/<%= bill.id %>/payment"
+                class="btn-green"
+            >
+
+                <i class="fa-solid fa-calendar-check"></i>
+
+                Validasi Pembayaran
+
+            </a>
+
+        <% } %>
+
+    </div>
+
+</div>

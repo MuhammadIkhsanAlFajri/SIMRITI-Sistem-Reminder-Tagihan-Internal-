@@ -1,0 +1,333 @@
+<div class="page-header">
+  <h1>Validasi Tagihan</h1>
+
+  <p>Dashboard / Data Tagihan / Detail Tagihan / Validasi Tagihan</p>
+</div>
+
+<div class="payment-wrapper">
+
+  <!-- ========================= -->
+  <!-- KIRI -->
+  <!-- ========================= -->
+
+  <div class="payment-left">
+
+    <div class="card">
+
+      <h2>
+        <i class="fa-solid fa-file-invoice"></i>
+        Informasi Tagihan
+      </h2>
+
+      <table class="info-table">
+
+        <tr>
+          <td>Judul Tagihan</td>
+          <td><%= bill.title %></td>
+        </tr>
+
+        <% if (bill.invoiceNumber) { %>
+        <tr>
+          <td>Nomor Invoice</td>
+          <td><%= bill.invoiceNumber %></td>
+        </tr>
+        <% } %>
+
+        <tr>
+          <td>Vendor</td>
+          <td><%= bill.vendor.name %></td>
+        </tr>
+
+        <tr>
+          <td>Jenis Tagihan</td>
+          <td>
+            <% if (bill.type === "BERULANG") { %>
+              Tagihan Berulang
+            <% } else { %>
+              Tagihan Normal
+            <% } %>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Nominal</td>
+          <td>
+            <% if (bill.amount !== null && bill.amount !== undefined) { %>
+              Rp <%= Number(bill.amount).toLocaleString("id-ID") %>
+            <% } else { %>
+              Belum ditentukan
+            <% } %>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Tanggal Invoice</td>
+          <td>
+            <%= bill.invoiceDate.toLocaleDateString("id-ID") %>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Jatuh Tempo</td>
+          <td>
+            <%= bill.dueDate.toLocaleDateString("id-ID") %>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Status</td>
+
+          <td>
+            <span class="status <%= bill.status.toLowerCase() %>">
+              <%= bill.status.replaceAll("_", " ") %>
+            </span>
+          </td>
+        </tr>
+
+      </table>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- INFORMASI RECURRING -->
+    <!-- ========================= -->
+
+    <% if (bill.type === "BERULANG") { %>
+
+      <div class="card reminder-box">
+
+        <h2>
+          <i class="fa-solid fa-repeat"></i>
+          Tagihan Berulang
+        </h2>
+
+        <p>
+          Tagihan ini merupakan tagihan berulang.
+        </p>
+
+        <p>
+          Periode saat ini:
+          <strong>
+            <%= bill.recurringPeriod || 1 %>
+          </strong>
+
+          <% if (bill.recurringMonths > 0) { %>
+
+            dari
+            <strong>
+              <%= bill.recurringMonths %>
+            </strong>
+            bulan.
+
+          <% } else { %>
+
+            (tanpa batas)
+
+          <% } %>
+        </p>
+
+        <p>
+          Setelah pembayaran divalidasi, Anda dapat menentukan
+          tenggat untuk periode berikutnya.
+        </p>
+
+      </div>
+
+    <% } else { %>
+
+      <div class="card reminder-box">
+
+        <h2>
+          <i class="fa-solid fa-bell"></i>
+          Reminder
+        </h2>
+
+        <p>
+          Reminder akan otomatis berhenti setelah pembayaran
+          berhasil divalidasi.
+        </p>
+
+      </div>
+
+    <% } %>
+
+  </div>
+
+
+  <!-- ========================= -->
+  <!-- KANAN -->
+  <!-- ========================= -->
+
+  <div class="payment-right">
+
+    <form
+      action="/bills/<%= bill.id %>/payment"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+
+      <div class="card">
+
+        <h2>
+          <i class="fa-solid fa-circle-check"></i>
+          Validasi Pembayaran
+        </h2>
+
+
+        <!-- ========================= -->
+        <!-- TANGGAL PEMBAYARAN -->
+        <!-- ========================= -->
+
+        <div class="form-group">
+
+          <label>
+            Tanggal Pembayaran
+          </label>
+
+          <input
+            type="date"
+            name="paymentDate"
+            required
+          >
+
+        </div>
+
+        <div class="form-group">
+          <label for="amount">Nominal Pembayaran</label>
+
+          <div class="input-money">
+            <span>Rp</span>
+            <input
+              type="number"
+              id="amount"
+              name="amount"
+              min="0"
+              step="0.01"
+              value="<%= bill.type === 'BERULANG' && bill.amount && bill.recurringMonths ? (bill.amount / bill.recurringMonths) : bill.amount %>"
+              required
+            >
+          </div>
+
+          <% if (bill.type === "BERULANG") { %>
+            <small class="form-help">
+              Nominal default dihitung dari total tagihan dibagi jumlah periode.
+              Anda dapat mengubah nominal pembayaran sesuai pembayaran aktual.
+            </small>
+          <% } %>
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- TENGGAT BERIKUTNYA -->
+        <!-- KHUSUS RECURRING -->
+        <!-- ========================= -->
+
+        <%
+          const currentPeriod = bill.recurringPeriod || 1;
+
+          const hasNextPeriod =
+            bill.type === "BERULANG" &&
+            (
+              bill.recurringMonths === 0 ||
+              currentPeriod < bill.recurringMonths
+            );
+        %>
+
+        <% if (hasNextPeriod) { %>
+          <div class="form-group next-due-section">
+
+            <label>
+              Tenggat Berikutnya
+              <span class="required">*</span>
+            </label>
+
+            <input
+              type="date"
+              name="nextDueDate"
+              id="nextDueDate"
+              required
+            >
+
+            <small>
+              Masukkan tenggat tagihan untuk periode berikutnya
+            </small>
+          </div>
+        <% } %>
+
+        <!-- ========================= -->
+        <!-- BUKTI PEMBAYARAN -->
+        <!-- OPSIONAL -->
+        <!-- ========================= -->
+
+        <div class="form-group">
+
+          <label>
+            Bukti Pembayaran
+            <span class="optional">
+              (Opsional)
+            </span>
+          </label>
+
+          <input
+            type="file"
+            name="paymentProof"
+            accept=".pdf,.jpg,.jpeg,.png"
+          >
+
+          <small>
+            Bukti pembayaran tidak wajib diunggah.
+          </small>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- CATATAN -->
+        <!-- ========================= -->
+
+        <div class="form-group">
+
+          <label>
+            Catatan
+          </label>
+
+          <textarea
+            name="note"
+            rows="4"
+            placeholder="Tambahkan catatan jika diperlukan..."
+          ></textarea>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- BUTTON -->
+        <!-- ========================= -->
+
+        <div class="payment-buttons">
+
+          <a
+            href="/bills/<%= bill.id %>"
+            class="btn-back"
+          >
+            Kembali
+          </a>
+
+          <button
+            type="submit"
+            class="btn-green"
+          >
+            <i class="fa-solid fa-check"></i>
+            Validasi Pembayaran
+          </button>
+
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

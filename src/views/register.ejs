@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register SIMRITI</title>
+
+    <link rel="stylesheet" href="/css/register.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <div class="card">
+
+        <div class="left">
+
+            <h1>Buat Akun pengguna baru</h1>
+
+            <% if(error){ %>
+
+                <div class="error">
+                    <%= error %>
+                </div>
+
+            <% } %>
+
+            <form id="registerForm" action="/register" method="POST">
+
+                <label>Username</label>
+
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="username"
+                    required>
+
+                <label>Nama Lengkap</label>
+
+                <input
+                    type="text"
+                    name="fullName"
+                    placeholder="nama lengkap"
+                    required>
+
+                <label for="email">Email</label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Masukkan email"
+                    required
+                >
+
+                <label>Password</label>
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Isi password"
+                    required>
+
+                <label>Konfirmasi Password</label>
+
+                <input
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Ketik ulang password"
+                    required>
+
+            </form>
+
+            <p>
+
+                Sudah punya akun?
+
+                <a href="/login">
+                    Login
+                </a>
+
+            </p>
+
+        </div>
+
+        <div class="right">
+
+            <img
+                src="/images/logo.png"
+                alt="SIMRITI">
+
+            <button
+                type="submit"
+                form="registerForm"
+                class="save-btn">
+
+                <i class="fa-solid fa-floppy-disk"></i>
+
+                Simpan Pengguna
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

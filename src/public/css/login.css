@@ -1,0 +1,213 @@
+/* ===========================
+   LOGIN PAGE
+=========================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: #bfbfbf;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* ===========================
+   CONTAINER
+=========================== */
+
+.page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-container {
+  width: 1280px;
+  height: 720px;
+  background: #272f3f;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 70px;
+}
+
+/* ===========================
+   LOGO
+=========================== */
+
+.logo {
+  width: 200px;
+  margin-bottom: 3px;
+}
+
+/* ===========================
+   FORM
+=========================== */
+
+.login-form {
+  width: 610px;
+}
+
+/* ===========================
+   LABEL
+=========================== */
+
+.login-form label {
+  display: block;
+  color: #fff;
+  font-size: 26px;
+  font-weight: 400;
+  margin-bottom: 5px;
+}
+
+/* ===========================
+   INPUT
+=========================== */
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group input {
+  width: 100%;
+  height: 46px;
+  border: none;
+  border-radius: 10px;
+  padding: 0 22px;
+  font-size: 22px;
+  outline: none;
+}
+
+input::placeholder {
+  color: #b5b5b5;
+}
+
+input:focus {
+  box-shadow: 0 0 0 3px rgba(116, 216, 79, 0.25);
+}
+
+/* ===========================
+   PASSWORD
+=========================== */
+
+.password-box {
+  position: relative;
+}
+
+.show-password {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  font-size: 20px;
+  color: #666;
+  cursor: pointer;
+}
+
+.login-form > a {
+  color: #00d9ff;
+  margin-top: 20px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-form > a:hover {
+  text-decoration: underline;
+}
+
+/* ===========================
+   REGISTER
+=========================== */
+
+.register-text {
+  text-align: right;
+  color: #fff;
+  font-size: 15px;
+  margin-top: 10px;
+  margin-bottom: 45px;
+}
+
+.register-text a {
+  color: #00d4ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* ===========================
+   BUTTON
+=========================== */
+
+.login-button {
+  width: 200px;
+  height: 60px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  background: #74d84f;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+/* ===========================
+   ERROR
+=========================== */
+
+.error-box {
+  width: 100%;
+  background: #ffdddd;
+  color: #cc0000;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.auth-links {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 45px;
+}
+
+.auth-links > a {
+  color: #00d9ff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-links > a:hover {
+  text-decoration: underline;
+}
+
+.register-text {
+  margin: 0;
+  color: #fff;
+  font-size: 15px;
+}
+
+.register-text a {
+  color: #00d4ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.register-text a:hover {
+  text-decoration: underline;
+}

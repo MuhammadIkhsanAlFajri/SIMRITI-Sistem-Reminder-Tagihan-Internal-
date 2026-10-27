@@ -1,0 +1,63 @@
+<div class="page-header">
+
+    <h1>Histori Log</h1>
+
+    <p>
+
+        Dashboard / Histori Log
+
+    </p>
+
+</div>
+
+<div class="table-card">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>No</th>
+
+                <th>Aktivitas</th>
+
+                <th>Detail</th>
+
+                <th>Pengguna</th>
+
+                <th>Waktu</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        <% logs.forEach((log,index)=>{ %>
+
+            <tr>
+
+                <td><%= index+1 %></td>
+
+                <td><%= log.activity %></td>
+
+                <td><%= log.detail %></td>
+
+                <td><%= log.user.fullName %></td>
+
+                <td>
+
+                    <%= log.createdAt.toLocaleString("id-ID") %>
+
+                </td>
+
+            </tr>
+
+        <% }) %>
+
+        </tbody>
+
+    </table>
+
+</div>

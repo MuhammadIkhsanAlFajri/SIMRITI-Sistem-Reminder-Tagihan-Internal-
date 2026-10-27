@@ -1,0 +1,359 @@
+<div class="page-header">
+    <h1>Data Tagihan</h1>
+    <p>Dashboard / Data Tagihan</p>
+</div>
+
+<form
+    id="filterForm"
+    action="/bills"
+    method="GET"
+    class="filter-card">
+
+    <div class="filter-group">
+
+        <div class="filter-item">
+
+            <label>Cari Tagihan</label>
+
+            <input
+                type="text"
+                name="search"
+                placeholder="Cari Judul Tagihan"
+                value="<%= query?.search || '' %>">
+
+        </div>
+
+        <div class="filter-item">
+
+            <label>Vendor</label>
+
+            <select name="vendor">
+
+                <option value="">Semua Vendor</option>
+
+                <% vendors.forEach(vendor=>{ %>
+
+                    <option
+                        value="<%= vendor.id %>"
+                        <%= String(query?.vendor || '') === String(vendor.id) ? "selected" : "" %>>
+
+                        <%= vendor.name %>
+
+                    </option>
+
+                <% }) %>
+
+            </select>
+
+        </div>
+
+        <div class="filter-item">
+
+            <label>Status</label>
+
+            <select name="status">
+
+                <option value="">Semua Status</option>
+
+                <% statuses.forEach(status=>{ %>
+
+                    <option
+                        value="<%= status %>"
+                        <%= query?.status === status ? "selected" : "" %>>
+
+                        <%= status.replaceAll("_"," ") %>
+
+                    </option>
+
+                <% }) %>
+
+            </select>
+
+        </div>
+
+        <div class="filter-item">
+
+            <label>Periode</label>
+
+            <input
+                type="month"
+                id="period"
+                name="period"
+                value="<%= query?.period || '' %>">
+
+        </div>
+
+    </div>
+
+    <a
+        href="/bills/create"
+        class="btn-green">
+
+        + Tambah Tagihan
+
+    </a>
+
+</form>
+
+<div class="table-card">
+
+    <h2>Daftar Tagihan</h2>
+
+    <table>
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Nomor Tagihan</th>
+            <th>Judul Tagihan</th>
+            <th>Vendor</th>
+            <th>Nominal</th>
+            <th>Tenggat</th>
+            <th>Hitung Mundur</th>
+            <th>Status</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <% if (bills && bills.length > 0) { %>
+
+            <% bills.forEach((bill, index) => { %>
+
+                <tr class="bill-row" onclick="openBillDetail(event, '<%= bill.id %>')">
+
+                    <!-- NO -->
+                    <td>
+                        <%= index + 1 %>
+                    </td>
+
+                    <!-- NOMOR TAGIHAN / INVOICE -->
+                    <td>
+                        <%= bill.invoiceNumber || "-" %>
+                    </td>
+
+                    <!-- JUDUL TAGIHAN -->
+                    <td>
+                        <%= bill.title || "-" %>
+                    </td>
+
+                    <!-- VENDOR -->
+                    <td>
+                        <%= bill.vendor ? bill.vendor.name : "-" %>
+                    </td>
+
+                    <!-- NOMINAL -->
+                    <td>
+                        <% if (bill.amount !== null && bill.amount !== undefined) { %>
+
+                            Rp <%= Number(bill.amount).toLocaleString("id-ID") %>
+
+                        <% } else { %>
+
+                            -
+
+                        <% } %>
+                    </td>
+
+                    <!-- TENGGAT -->
+                    <td>
+                        <%= bill.dueDate
+                            ? new Date(bill.dueDate).toLocaleDateString("id-ID")
+                            : "-"
+                        %>
+                    </td>
+
+                    <!-- HITUNG MUNDUR -->
+                    <td>
+                        <% if (bill.dueDate) { %>
+                            <%
+                                const today = new Date();
+                                const dueDate = new Date(bill.dueDate);
+                            
+                                today.setHours(0, 0, 0, 0);
+                                dueDate.setHours(0, 0, 0, 0);
+                            
+                                const diffTime = dueDate - today;
+                            
+                                const diffDays = Math.ceil(
+                                    diffTime / (1000 * 60 * 60 * 24)
+                                );
+                            %>
+                            
+                            <% if (bill.status === "SUDAH_DIBAYAR") { %>
+                            
+                                <span class="countdown paid">
+                                    Selesai
+                                </span>
+                            
+                            <% } else if (bill.status === "AKAN_JATUH_TEMPO") { %>
+                            
+                                <% if (diffDays === 0) { %>
+                                
+                                    <span class="countdown warning">
+                                        Hari ini
+                                    </span>
+                                
+                                <% } else { %>
+                                
+                                    <span class="countdown warning">
+                                        <%= diffDays %> hari lagi
+                                    </span>
+                                <% } %>
+                            <% } else if (bill.status === "TERLAMBAT") { %>
+
+                                <span class="countdown overdue">
+                                    Terlambat <%= Math.abs(diffDays) %> hari
+                                </span>
+                            <% } else { %>
+                                <span class="countdown waiting">
+                                    <%= diffDays %> hari lagi
+                                </span>
+                            <% } %>
+                        <% } else { %>
+                            <span>-</span>
+                        <% } %>
+                    </td>
+
+                    <!-- STATUS -->
+                    <td>
+
+                        <span class="status <%= bill.status.toLowerCase() %>">
+                            <% if (bill.status === "SUDAH_DIBAYAR") { %>
+                                LUNAS
+                            <% } else { %>
+                                <%= bill.status.replaceAll("_", " ") %>
+                            <% } %>
+                        </span>
+
+                    </td>
+
+                    <!-- AKSI -->
+<td class="action-cell">
+
+    <div class="action">
+
+        <!-- DETAIL -->
+        <a
+            href="/bills/<%= bill.id %>"
+            class="btn-action view"
+            title="Lihat Detail"
+        >
+            <i class="fa-solid fa-eye"></i>
+        </a>
+
+        <!-- EDIT -->
+        <% if (bill.type === "NORMAL" && bill.status === "SUDAH_DIBAYAR") { %>
+
+    <span
+      class="btn-action edit disabled"
+      title="Tagihan sudah lunas dan tidak dapat diedit"
+    >
+      <i class="fa-solid fa-pen"></i>
+    </span>
+
+  <% } else { %>
+
+    <a
+      href="/bills/<%= bill.id %>/edit"
+      class="btn-action edit"
+      title="Edit Tagihan"
+    >
+      <i class="fa-solid fa-pen"></i>
+    </a>
+
+  <% } %>
+
+        <!-- DELETE -->
+        <form
+            action="/bills/<%= bill.id %>/delete"
+            method="POST"
+            onsubmit="return confirm('Yakin ingin menghapus tagihan ini?');"
+        >
+            <button
+                type="submit"
+                class="btn-action delete"
+                title="Hapus Tagihan"
+            >
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </form>
+
+    </div>
+
+</td>
+
+                </tr>
+
+            <% }) %>
+
+        <% } else { %>
+
+            <tr>
+                <td colspan="9" class="empty">
+                    Belum ada data tagihan.
+                </td>
+            </tr>
+
+        <% } %>
+
+    </tbody>
+</table>
+
+</div>
+
+<script>
+
+const filterForm = document.getElementById("filterForm");
+
+const searchInput = document.querySelector('input[name="search"]');
+
+searchInput.addEventListener("keydown",function(e){
+
+    if(e.key==="Enter"){
+
+        e.preventDefault();
+
+        filterForm.submit();
+
+    }
+
+});
+
+document.querySelectorAll('select,input[name="period"]').forEach(el=>{
+
+    el.addEventListener("change",function(){
+
+        filterForm.submit();
+
+    });
+
+});
+
+document.querySelectorAll(".delete-form").forEach(form=>{
+
+    form.addEventListener("submit",function(e){
+
+        if(!confirm("Yakin ingin menghapus tagihan ini?")){
+
+            e.preventDefault();
+
+        }
+
+    });
+
+});
+
+function openBillDetail(event, billId) {
+    if (
+        event.target.closest(".action-cell") ||
+        event.target.closest("a") ||
+        event.target.closest("button") ||
+        event.target.closest("form")
+    ) {
+        return;
+    }
+    window.location.href = `/bills/${billId}`;
+}
+
+</script>

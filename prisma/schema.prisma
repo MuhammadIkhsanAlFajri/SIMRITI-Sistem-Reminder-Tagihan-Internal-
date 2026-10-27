@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int                  @id @default(autoincrement())
+  username    String               @unique
+  fullName    String
+  password    String
+  email       String?              @unique
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  activities  ActivityLog[]
+  bills       Bill[]
+  resetTokens PasswordResetToken[]
+}
+
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  expiresAt DateTime
+  userId    Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Vendor {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  bills     Bill[]
+}
+
+model Bill {
+  id Int @id @default(autoincrement())
+
+  title         String
+  invoiceNumber String?
+  description   String?
+  amount        Float?
+
+  invoiceDate DateTime
+  dueDate     DateTime
+
+  previousDueDate    DateTime?
+  nextDueDate        DateTime?
+  paidAt             DateTime?
+  lastReminderSentAt DateTime?
+  lastEmailReminderSentAt DateTime?
+  invoiceFile        String?
+
+  type BillType @default(NORMAL)
+
+  isRecurring     Boolean @default(false)
+  recurringMonths Int     @default(0)
+  recurringPeriod Int     @default(1)
+
+  status    BillStatus
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  vendorId Int
+  userId   Int
+
+  user     User      @relation(fields: [userId], references: [id])
+  vendor   Vendor    @relation(fields: [vendorId], references: [id])
+  payments Payment[]
+}
+
+enum BillType {
+  NORMAL
+  BERULANG
+}
+
+model ReminderSetting {
+  id         Int            @id @default(autoincrement())
+  daysBefore Int            @default(7)
+  status     ReminderStatus @default(AKTIF)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+}
+
+model Payment {
+  id Int @id @default(autoincrement())
+
+  periodDate DateTime
+  dueDate    DateTime
+
+  paymentDate DateTime?
+
+  amount Float?
+
+  status PaymentStatus @default(MENUNGGU_PEMBAYARAN)
+
+  proofFile String?
+  note      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  billId Int
+
+  bill Bill @relation(fields: [billId], references: [id], onDelete: Cascade)
+}
+
+model ActivityLog {
+  id        Int          @id @default(autoincrement())
+  activity  ActivityType
+  detail    String
+  createdAt DateTime     @default(now())
+  userId    Int
+  user      User         @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+enum PaymentStatus {
+  MENUNGGU_PEMBAYARAN
+  AKAN_JATUH_TEMPO
+  TERLAMBAT
+  SUDAH_DIBAYAR
+}
+
+enum BillStatus {
+  MENUNGGU_PEMBAYARAN
+  AKAN_JATUH_TEMPO
+  TERLAMBAT
+  SUDAH_DIBAYAR
+}
+
+enum ReminderStatus {
+  AKTIF
+  NONAKTIF
+}
+
+enum ActivityType {
+  LOGIN
+  LOGOUT
+  TAMBAH_TAGIHAN
+  EDIT_TAGIHAN
+  HAPUS_TAGIHAN
+  UBAH_STATUS
+  PEMBAYARAN
+}

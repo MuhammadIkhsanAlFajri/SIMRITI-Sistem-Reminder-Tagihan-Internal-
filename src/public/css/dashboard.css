@@ -1,0 +1,228 @@
+.page-header {
+  margin-bottom: 35px;
+}
+
+.page-header h1 {
+  font-size: 30px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.page-header p {
+  font-size: 20px;
+  color: #666;
+  margin-top: 8px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+  margin-bottom: 35px;
+}
+
+.summary-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 28px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.summary-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  background: #f4f6fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  color: #202938;
+}
+
+.summary-card h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.summary-card h2 {
+  font-size: 50px;
+  margin: 0;
+  font-weight: 700;
+}
+
+.summary-card span {
+  color: #777;
+  font-size: 15px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.dashboard-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
+
+.dashboard-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dashboard-card-header h2 {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.btn-view {
+  background: #66bb55;
+  color: white;
+  padding: 10px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.btn-view:hover {
+  background: #54a745;
+  color: white;
+}
+
+.status-badge {
+  padding: 6px 15px;
+  border-radius: 20px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.status-menunggu {
+  background: #4285f4;
+}
+
+.status-jatuh {
+  background: #f4b400;
+}
+
+.status-terlambat {
+  background: #ea4335;
+}
+
+.status-lunas {
+  background: #34a853;
+}
+
+table {
+  width: 100%;
+}
+
+table th {
+  background: #f7f8fa;
+}
+
+table td,
+table th {
+  padding: 14px;
+}
+
+@media (max-width: 1200px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.countdown {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.countdown.today {
+  background: #fff4cf;
+  color: #d49c00;
+}
+
+.countdown.overdue {
+  background: #ffd9d9;
+  color: #d93025;
+}
+
+.countdown.paid {
+  background: #d7f8df;
+  color: #0f9d58;
+}
+
+.countdown.waiting {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.countdown.warning {
+  background: #fff4cf;
+  color: #d49c00;
+}
+
+/* ==============================
+   SUMMARY CARD LINK
+================================ */
+
+.summary-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* ==============================
+   CLICKABLE SUMMARY CARD
+================================ */
+
+.summary-card {
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* ==============================
+   CLICKABLE TABLE ROW
+================================ */
+
+.clickable-row {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.clickable-row:hover {
+  background: #f5f8f5;
+}

@@ -1,0 +1,159 @@
+<div class="page-header">
+    <h1>Reminder</h1>
+    <p>Dashboard / Reminder</p>
+</div>
+
+<div class="reminder-toolbar">
+
+    <form action="/reminder" method="GET">
+
+        <select name="vendor" onchange="this.form.submit()">
+
+            <option value="">Semua Vendor</option>
+
+            <% vendors.forEach(vendor=>{ %>
+
+                <option
+                    value="<%= vendor.id %>"
+                    <%= Number(query.vendor) === vendor.id ? "selected" : "" %>>
+
+                    <%= vendor.name %>
+
+                </option>
+
+            <% }) %>
+
+        </select>
+
+        <select name="status" onchange="this.form.submit()">
+
+    <option value="">Semua Status</option>
+
+    <option value="MENUNGGU_PEMBAYARAN"
+        <%= query.status=="MENUNGGU_PEMBAYARAN" ? "selected" : "" %>>
+        Menunggu Pembayaran
+    </option>
+
+    <option value="AKAN_JATUH_TEMPO"
+        <%= query.status=="AKAN_JATUH_TEMPO" ? "selected" : "" %>>
+        Akan Jatuh Tempo
+    </option>
+
+    <option value="TERLAMBAT"
+        <%= query.status=="TERLAMBAT" ? "selected" : "" %>>
+        Terlambat
+    </option>
+
+    <option value="SUDAH_DIBAYAR"
+        <%= query.status=="SUDAH_DIBAYAR" ? "selected" : "" %>>
+        Sudah Dibayar
+    </option>
+
+</select>
+
+        <input
+    type="text"
+    name="search"
+    placeholder="Cari Judul Tagihan"
+    value="<%= query.search || '' %>"
+    onkeydown="if(event.key==='Enter'){this.form.submit();}">
+
+
+    </form>
+
+    <a
+        href="/bills/create"
+        class="btn-add-reminder">
+
+        <i class="fa-solid fa-plus"></i>
+
+        Tambah Reminder
+
+    </a>
+
+</div>
+
+
+
+<table class="table-reminder">
+
+<thead>
+
+<tr>
+
+<th>No</th>
+<th>Tagihan</th>
+<th>Vendor</th>
+<th>Ingatkan Saat</th>
+<th>Frekuensi</th>
+<th>Status</th>
+<th>Aktif Hingga</th>
+<th>Aksi</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<% bills.forEach((bill,index)=>{ %>
+
+<tr>
+
+<td><%= index+1 %></td>
+
+<td><%= bill.title %></td>
+
+<td><%= bill.vendor.name %></td>
+
+<td>
+
+<%= setting.daysBefore %> hari sebelum jatuh tempo
+
+</td>
+
+<td>
+
+Setiap <%= setting.frequency %> hari
+
+</td>
+
+<td>
+
+<span class="status <%= setting.status=="AKTIF" ? "green":"gray" %>">
+
+<%= setting.status %>
+
+</span>
+
+</td>
+
+<td>
+
+<%= bill.dueDate.toLocaleDateString("id-ID") %>
+
+</td>
+
+<td>
+
+<a href="/bills/<%= bill.id %>/edit" class="actioon-btn edit">
+
+<i class="fa-solid fa-pen"></i>
+
+</a>
+
+<a href="/bills/<%= bill.id %>/delete" class="action-btn delete">
+
+<i class="fa-solid fa-trash"></i>
+
+</a>
+
+</td>
+
+</tr>
+
+<% }) %>
+
+</tbody>
+
+</table>

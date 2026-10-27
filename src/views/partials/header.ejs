@@ -1,0 +1,82 @@
+<header>
+
+    <div class="header-right">
+
+        <div class="notification">
+
+            <i class="fa-solid fa-bell"></i>
+
+            <% if (notifications && notifications.length > 0) { %>
+                <span class="dot"></span>
+            <% } %>
+
+            <div class="notification-box">
+
+                <% if (notifications && notifications.length > 0) { %>
+
+                    <% notifications.forEach(bill => { %>
+
+                        <%
+                            const today = new Date();
+
+                            const diff = Math.ceil(
+                                (new Date(bill.dueDate) - today) /
+                                (1000 * 60 * 60 * 24)
+                            );
+                        %>
+
+                        <div class="notif-item">
+
+                            <span class="yellow-dot"></span>
+
+                            <div class="notif-text">
+
+                                <strong><%= bill.title %></strong>
+
+                                <br>
+
+                                <% if (diff <= 0) { %>
+
+                                    Reminder hari ini.
+
+                                <% } else { %>
+
+                                    Reminder dalam <%= diff %> hari.
+
+                                <% } %>
+
+                            </div>
+
+                        </div>
+
+                    <% }) %>
+
+                <% } else { %>
+
+                    <div class="empty">
+
+                        Tidak Ada Notifikasi Bulan Ini
+
+                    </div>
+
+                <% } %>
+
+            </div>
+
+        </div>
+
+        <div class="profile">
+
+            <i class="fa fa-circle-user"></i>
+
+            <span>
+
+                <%= locals.user ? locals.user.fullName : "Pengguna" %>
+
+            </span>
+
+        </div>
+
+    </div>
+
+</header>

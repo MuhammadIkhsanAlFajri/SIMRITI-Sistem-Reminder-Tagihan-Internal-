@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+
+    <title><%= locals.title || "SIMRITI" %></title>
+
+    <link rel="stylesheet" href="/css/style.css" />
+
+    <link rel="stylesheet" href="/css/dashboard.css" />
+
+    <link rel="stylesheet" href="/css/bills.css" />
+
+    <link rel="stylesheet" href="/css/create-bill.css" />
+
+    <link rel="stylesheet" href="/css/reminder.css" />
+
+    <link rel="stylesheet" href="/css/payment.css" />
+
+    <link rel="stylesheet" href="/css/help.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+  </head>
+
+  <body>
+    <div class="app">
+      <%- include("../partials/sidebar") %>
+
+      <div class="content">
+        <%- include("../partials/header") %>
+
+        <main><%- body %></main>
+      </div>
+    </div>
+  </body>
+</html>

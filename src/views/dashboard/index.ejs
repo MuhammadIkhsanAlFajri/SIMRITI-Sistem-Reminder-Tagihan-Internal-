@@ -1,0 +1,367 @@
+<div class="page-header">
+  <h1>Halo "<%= userName %>", Selamat Datang!</h1>
+  <p>Invoice Reminder System</p>
+</div>
+
+<div class="summary-grid">
+
+  <!-- TOTAL TAGIHAN -->
+  <a href="/bills" class="summary-card-link">
+
+    <div class="summary-card">
+
+      <div class="summary-icon">
+        <i class="fa-solid fa-file-invoice"></i>
+      </div>
+
+      <div>
+        <h3>Total Tagihan</h3>
+        <h2><%= totalBill %></h2>
+        <span>Semua Tagihan Terdaftar</span>
+      </div>
+
+    </div>
+
+  </a>
+
+
+  <!-- AKAN JATUH TEMPO -->
+  <a
+    href="/bills?status=AKAN_JATUH_TEMPO"
+    class="summary-card-link"
+  >
+
+    <div class="summary-card">
+
+      <div class="summary-icon">
+        <i class="fa-solid fa-hourglass-half"></i>
+      </div>
+
+      <div>
+        <h3>Akan Jatuh Tempo</h3>
+        <h2><%= dueSoon %></h2>
+        <span>Tenggat Dalam 7 Hari</span>
+      </div>
+
+    </div>
+
+  </a>
+
+
+  <!-- TERLAMBAT -->
+  <a
+    href="/bills?status=TERLAMBAT"
+    class="summary-card-link"
+  >
+
+    <div class="summary-card">
+
+      <div class="summary-icon">
+        <i class="fa-solid fa-circle-exclamation"></i>
+      </div>
+
+      <div>
+        <h3>Terlambat Bayar</h3>
+        <h2><%= overdue %></h2>
+        <span>Sudah Lewat Tenggat</span>
+      </div>
+
+    </div>
+
+  </a>
+
+
+  <!-- SUDAH DIBAYAR -->
+  <a
+    href="/bills?status=SUDAH_DIBAYAR"
+    class="summary-card-link"
+  >
+
+    <div class="summary-card">
+
+      <div class="summary-icon">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+
+      <div>
+        <h3>Sudah Dibayar</h3>
+        <h2><%= paid %></h2>
+        <span>Semua Tagihan Telah Lunas</span>
+      </div>
+
+    </div>
+
+  </a>
+
+</div>
+
+<!-- bagian tabel dashboard tetap seperti sebelumnya -->
+<section class="dashboard-bottom">
+
+    <div class="dashboard-table">
+
+        <div class="table-header">
+
+            <h2>Daftar Tagihan</h2>
+
+            <a href="/bills" class="btn-view">
+                Lihat Semua
+            </a>
+
+        </div>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>No</th>
+                    <th>Nomor Tagihan</th>
+                    <th>Judul Tagihan</th>
+                    <th>Vendor</th>
+                    <th>Nominal</th>
+                    <th>Tenggat</th>
+                    <th>Hitung Mundur</th>
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+  <% if (bills && bills.length > 0) { %>
+
+    <% bills.forEach((bill, index) => { %>
+
+      <tr 
+          class="clickable-row"
+          onclick="window.location.href='/bills/<%= bill.id %>'"
+      >
+        <!-- No -->
+        <td>
+          <%= index + 1 %>
+        </td>
+
+        <!-- Nomor Tagihan -->
+        <td>
+          <%= bill.invoiceNumber || "-" %>
+        </td>
+
+        <!-- Nama Tagihan -->
+        <td>
+          <%= bill.title || "-" %>
+        </td>
+
+        <!-- Vendor -->
+        <td>
+          <%= bill.vendor ? bill.vendor.name : "-" %>
+        </td>
+
+        <!-- Nominal -->
+        <td>
+          <% if (bill.displayAmount !== null && bill.displayAmount !== undefined) { %>
+
+            Rp <%= Number(bill.displayAmount).toLocaleString("id-ID") %>
+
+          <% } else { %>
+
+            -
+
+          <% } %>
+        </td>
+
+        <!-- Tenggat -->
+        <td>
+          <%= bill.dueDate
+            ? new Date(bill.dueDate).toLocaleDateString("id-ID")
+            : "-"
+          %>
+        </td>
+
+<!-- Hitung Mundur -->
+<td>
+  <% if (bill.dueDate) { %>
+
+    <%
+      const today = new Date();
+      const dueDate = new Date(bill.dueDate);
+
+      today.setHours(0, 0, 0, 0);
+      dueDate.setHours(0, 0, 0, 0);
+
+      const diffTime = dueDate - today;
+
+      const diffDays = Math.ceil(
+        diffTime / (1000 * 60 * 60 * 24)
+      );
+    %>
+
+    <% if (bill.status === "SUDAH_DIBAYAR") { %>
+
+      <span class="countdown paid">
+        Selesai
+      </span>
+
+    <% } else if (bill.status === "AKAN_JATUH_TEMPO") { %>
+
+      <% if (diffDays > 0) { %>
+
+        <span class="countdown warning">
+          <%= diffDays %> hari lagi
+        </span>
+
+      <% } else { %>
+
+        <span class="countdown warning">
+          Hari ini
+        </span>
+
+      <% } %>
+
+    <% } else if (bill.status === "MENUNGGU_PEMBAYARAN") { %>
+
+      <% if (diffDays > 0) { %>
+
+        <span class="countdown waiting">
+          <%= diffDays %> hari lagi
+        </span>
+
+      <% } else { %>
+
+        <span class="countdown waiting">
+          Hari ini
+        </span>
+
+      <% } %>
+
+    <% } else if (bill.status === "TERLAMBAT") { %>
+
+      <span class="countdown overdue">
+        Terlambat <%= Math.abs(diffDays) %> hari
+      </span>
+
+    <% } %>
+
+  <% } else { %>
+
+    <span>-</span>
+
+  <% } %>
+</td>
+
+        <!-- Status -->
+        <td>
+          <span class="status <%= bill.status.toLowerCase() %>">
+            <% if (bill.status === "SUDAH_DIBAYAR") { %>
+              LUNAS
+            <% } else { %>
+              <%= bill.status.replaceAll("_", " ") %>
+            <% } %>
+          </span>
+        </td>
+
+      </tr>
+
+    <% }) %>
+
+  <% } else { %>
+
+    <tr>
+      <td colspan="8" class="empty">
+        Belum ada data tagihan.
+      </td>
+    </tr>
+
+  <% } %>
+</tbody>
+
+        </table>
+
+    </div>
+
+
+
+    <div class="dashboard-vendor">
+
+        <div class="table-header">
+
+            <h2>Daftar Vendor</h2>
+
+            <a href="/bills" class="btn-view">
+
+                Lihat Semua
+
+            </a>
+
+        </div>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>No</th>
+
+                    <th>Vendor</th>
+
+                    <th>Jumlah</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            <% vendorSummary.forEach((vendor,index)=>{ %>
+
+                <tr
+                  class="clickable-row"
+                  onclick="window.location.href='/bills?vendor=<%= vendor.id %>'"
+                >
+
+                    <td><%= index+1 %></td>
+
+                    <td>
+                    
+                          <%= vendor.name %>
+                      
+                    </td>
+
+                    <td><%= vendor._count.bills %></td>
+
+                </tr>
+
+            <% }) %>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+<script>
+    // Simpan bulan saat halaman pertama kali dibuka
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+
+    // Cek setiap 1 menit
+    setInterval(() => {
+        const now = new Date();
+
+        const newMonth = now.getMonth();
+        const newYear = now.getFullYear();
+
+        // Kalau bulan atau tahun berubah
+        if (
+            newMonth !== currentMonth ||
+            newYear !== currentYear
+        ) {
+            // Reload dashboard
+            window.location.reload();
+        }
+    }, 60000);
+</script>

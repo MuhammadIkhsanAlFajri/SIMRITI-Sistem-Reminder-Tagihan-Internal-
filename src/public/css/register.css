@@ -1,0 +1,188 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: #bdbdbd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  width: 1280px;
+
+  height: 720px;
+
+  background: #262f3f;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 70px;
+}
+
+.left {
+  width: 610px;
+}
+
+.left h1 {
+  font-size: 38px;
+
+  font-weight: 600;
+
+  color: #fff;
+
+  margin-bottom: 35px;
+}
+
+.left label {
+  display: block;
+
+  font-size: 18px;
+
+  color: #fff;
+
+  margin-bottom: 8px;
+
+  margin-top: 10px;
+}
+
+.left input {
+  width: 100%;
+
+  height: 45px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  padding: 15px;
+
+  font-size: 15px;
+
+  outline: none;
+}
+
+.left button {
+  margin-top: 30px;
+
+  width: 330px;
+
+  height: 50px;
+
+  background: #7bd34d;
+
+  border: none;
+
+  border-radius: 8px;
+
+  color: #fff;
+
+  font-size: 20px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+.left button:hover {
+  background: #69bf40;
+}
+
+.left p {
+  margin-top: 28px;
+
+  text-align: right;
+
+  font-size: 15px;
+
+  color: #fff;
+}
+
+.left p a {
+  color: #00d9ff;
+
+  text-decoration: none;
+
+  font-weight: 500;
+}
+
+.right {
+  width: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 120px;
+}
+
+.right img {
+  width: 150px;
+margin-bottom: 45px;
+}
+
+.error {
+  margin-bottom: 20px;
+
+  padding: 12px;
+
+  background: #ffd9d9;
+
+  color: red;
+
+  border-radius: 8px;
+}
+
+.right {
+  width: 420px;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
+}
+
+.right img {
+  width: 240px;
+  margin-bottom: 0px;
+}
+
+.save-btn {
+  width: 300px;
+  height: 62px;
+  background: #88d65c;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  transition: 0.3s;
+}
+
+.save-btn:hover {
+  background: #74c34a;
+}
+
+.save-btn i {
+  font-size: 20px;
+}
